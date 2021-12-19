@@ -1,19 +1,39 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 export const WatchListContext = createContext();
 
-export const WatchListContextProvider = props => {
-    const [watchList, setWatchList] = useState (["bitcoin", "ethereum", "ripple", "litecoin"])
+export const WatchListContextProvider = (props) => {
+  console.log();
+  const [watchList, setWatchList] = useState(
+    localStorage.getItem("watchList").split(",") || [
+      "bitcoin",
+      "ethereum",
+      "ripple",
+      "litecoin",
+    ]
+  );
 
-    const deleteCoin = (coin) => {
-        setWatchList(watchList.filter(el => {
-            return  el !== coin
-        }))
-    };
+  useEffect(() => {
+    localStorage.setItem("watchList", watchList);
+  }, [watchList]);
 
-    return(
-        <WatchListContext.Provider value={{watchList, deleteCoin}}>
-            {props.children}
-            </WatchListContext.Provider>
+  const AddCoin = (coin) => {
+    if (watchList.indexOf(coin) === -1) {
+      setWatchList([...watchList, coin]);
+    }
+  };
+
+  const deleteCoin = (coin) => {
+    setWatchList(
+      watchList.filter((el) => {
+        return el !== coin;
+      })
     );
+  };
+
+  return (
+    <WatchListContext.Provider value={{ watchList, deleteCoin, AddCoin }}>
+      {props.children}
+    </WatchListContext.Provider>
+  );
 };
