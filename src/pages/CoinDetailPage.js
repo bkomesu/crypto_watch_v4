@@ -9,10 +9,21 @@ const CoinDetailPage = () => {
   const [coinData, setCoinData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const dateConverter = (unix) => {
+    let date = new Date(unix);
+    let months = date.getMonth();
+    let day = date.getDate();
+    let hours = date.getHours();
+    let minutes = "0" + date.getMinutes();
+    let formattedTime =
+      day + "-" + months + "_" + hours + ":" + minutes.substr(-2);
+    return formattedTime;
+  };
+
   const formatData = (data) => {
     return data.map((el) => {
       return {
-        x: el[0],
+        x: dateConverter(el[0]),
         y: el[1].toFixed(2),
       };
     });
